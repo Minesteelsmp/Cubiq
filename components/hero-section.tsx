@@ -1,0 +1,123 @@
+'use client'
+
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { motion } from 'framer-motion'
+import { ArrowRight, Star } from 'lucide-react'
+import type { User } from '@/lib/types'
+
+interface HeroSectionProps {
+  user: User | null
+  settings: {
+    hero_logo_url?: string
+    hero_punchline?: string
+    hero_trustpilot_url?: string
+    trustpilot_url?: string
+    status_page_url?: string
+    site_name?: string
+  }
+}
+
+export function HeroSection({ user, settings }: HeroSectionProps) {
+  const punchline =
+    settings.hero_punchline || 'BUILT FOR PLAYERS, TRUSTED BY THOUSANDS'
+  const trust =
+    settings.hero_trustpilot_url || settings.trustpilot_url || ''
+  const status = settings.status_page_url || ''
+
+  return (
+    <section className="relative min-h-[85vh] flex items-center">
+      <div className="container relative z-10 mx-auto px-4 py-28 md:py-36">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-3xl"
+        >
+          {/* Punchline with 4px solid aqua left border */}
+          <motion.p
+            initial={{ opacity: 0, x: -16 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-xl md:text-3xl lg:text-4xl font-extrabold tracking-wide text-white uppercase leading-tight"
+            style={{
+              borderLeft: '4px solid #00e5ff',
+              paddingLeft: '16px',
+            }}
+          >
+            {punchline}
+          </motion.p>
+
+          {/* Two buttons side by side */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="flex flex-col sm:flex-row items-start gap-3 mt-10"
+          >
+            <Button
+              asChild
+              size="lg"
+              className="gap-2 min-w-48 shadow-[0_6px_24px_rgba(0,229,255,0.35)]"
+            >
+              <Link href={user ? '/dashboard' : '/auth/sign-up'}>
+                {user ? 'My Dashboard' : 'Get Started Free'}
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </Button>
+
+            {status ? (
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="min-w-48 bg-white/10 hover:bg-white/20 text-white border-white/30 backdrop-blur-sm"
+              >
+                <a href={status} target="_blank" rel="noopener noreferrer">
+                  Service Status
+                </a>
+              </Button>
+            ) : (
+              <Button
+                size="lg"
+                variant="outline"
+                className="min-w-48 bg-white/10 text-white border-white/30 backdrop-blur-sm"
+                disabled
+              >
+                Service Status
+              </Button>
+            )}
+          </motion.div>
+
+          {/* Trustpilot stars */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.45 }}
+            className="mt-10"
+          >
+            <a
+              href={trust || '#'}
+              target={trust ? '_blank' : undefined}
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/10 backdrop-blur border border-white/20 hover:bg-white/20 transition-colors"
+            >
+              <span className="flex items-center gap-0.5">
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <Star
+                    key={i}
+                    className="w-4 h-4 fill-current"
+                    style={{ color: '#00e5ff' }}
+                  />
+                ))}
+              </span>
+              <span className="text-sm font-semibold text-white">
+                Trustpilot
+              </span>
+            </a>
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
